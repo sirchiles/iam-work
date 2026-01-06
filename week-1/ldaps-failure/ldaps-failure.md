@@ -121,7 +121,6 @@ Although a firewall rule was added to block port 636, the LDAPS connection still
 
 **Key Findings:**
 - A firewall rule only works if the traffic is evaluated against it before allowed
-- 
 
 ## Cleanup
 Action:
