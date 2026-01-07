@@ -5,9 +5,9 @@
 - Observe what breaks when DNS is misconfigured
 
 ## Environment
-OS: Ubuntu Linux
-Browser: Firefox
-Network: Local Wi-Fi interface (NIC)
+- OS: Ubuntu Linux
+- Browser: Firefox
+- Network: Local Wi-Fi interface (NIC)
 
 ## Identity Endpoints
 - `login.microsoftonline.com` (M)
