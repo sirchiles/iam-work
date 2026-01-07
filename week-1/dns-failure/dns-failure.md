@@ -10,8 +10,8 @@ Browser: Firefox
 Network: Local Wi-Fi interface (NIC)
 
 ## Identity Endpoints
-- `login.microsoftonline.com`
-- `accounts.google.com`
+- `login.microsoftonline.com` (M)
+- `accounts.google.com` (G)
 - Both tested using same failure scenarios
 
 ## What I Tested
@@ -67,10 +67,10 @@ Result:
 
 ## Observations
 - Identity endpoints can rely on multiple DNS records before reaching an IP address
-- DNS resolution by itself does not guarantee a successful connection
 - When system DNS was broken, `dig` failed for both endpoints
 - System DNS failure did not immediately stop login page from loading in browser (see Figures 2 and 5)
 - Browser behaved differently once it was forced to rely on misconfigured local DNS (see Figures 3 and 6)
+- DNS resolution is required to reach endpoints, but that alone does not guarantee a successful connection
 
 ## Analysis
 DNS must be resolved before a browser can reach a login page. When DNS fails, the client doesn't know where to send the login request, so authentication never actually begins. When I misconfigured system DNS, I expected the page to fail immediately, but it didn't. I eventually figured out the browser was still able to load the page because it was resolving DNS on its own using DNS over HTTPS (DoH), bypassing system DNS. The login page failed to load after I disabled DoH and forced the browser to rely on system DNS. This showed me that clients can choose different resolution paths (e.g. OS, broswer, cache, persistent connections) and that failures depend on which path was taken.
