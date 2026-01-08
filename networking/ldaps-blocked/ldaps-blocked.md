@@ -86,7 +86,7 @@ netcat -v db.debian.org 636
 ```
 
 Result:
-- Connection still succeededd
+- Connection still succeeded
 - Firewall rule counters still at zero
 
 **Firewall Rule Order Review**
@@ -117,10 +117,11 @@ Result:
 - Firewall rule packet and byte counters increased
 
 ## Analysis
-Although a firewall rule was added to block port 636, the LDAPS connection still worked because the traffic was not being checked against that rule. The connection was allowed to pass through before the block could be applied and in a different network path, which is why the rule counters stayed at zero and the connection succeeded. After the rule was moved to be evaluated first, applied to the correct network path, and existing connections were cleared, outbound traffic to the port was rejected immediately, preventing LDAPS communcation before any secure session could start.
+Although a firewall rule was added to block port 636, the LDAPS connection still worked because the traffic was not being checked against that rule. IPv6 traffic was not initially covered, and existing connection state allowed the connection to succeed, which is why the rule counters stayed at zero. After the rule was moved to be evaluated first, applied to both IPv4 and IPv6, and existing connections were cleared, outbound traffic to the port was rejected immediately, preventing LDAPS communcation before any secure session could start.
 
 **Key Findings:**
-- A firewall rule only works if the traffic is evaluated against it before allowed
+- Firewall rule order and connection state must be checked when a change has no effect
+- Clients may try more than one address automatically, so blocking a single path doesn't guarantee failure 
 
 ## Cleanup
 Action:
@@ -139,9 +140,9 @@ Result:
 - Connection to port 636 succeeded
 
 ## What I Validated
-- Blocking a required port can stop authentication before any login or directory access happens
-- Firewall rule order and connection state must be checked when a change has no effect
-- Clients may try more than one network path automatically, so a connection can succeed even if one path is blocked
+- IPv6 connections still worked after an IPv4 outbound block rule was added
+- Existing connection state allowed LDAPS to keep working until it was cleared
+- Moving the block rule to the top to be evaluated earlier caused the failure
 
 ## Evidence
 *Figure 1:*
